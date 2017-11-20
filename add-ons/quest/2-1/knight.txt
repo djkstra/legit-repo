@@ -1,4 +1,5 @@
 automacro AddSkillPoints {
+	QuestInactive 9000, 9003, 9004, 9006, 9010, 9011, 9012 #added
 	FreeSkillPoints > 0
 	JobID 1
 	JobLevel = 50
@@ -19,48 +20,21 @@ automacro AddSkillPoints {
 }
 
 automacro Swordie50 {
-	#ConfigKey knightQuest ""
+	ConfigKey knightQuest none
 	QuestInactive 9000, 9003, 9004, 9006, 9010, 9011, 9012
+	NotInMap prt_fild05, prontera
 	JobID 1
 	JobLevel = 50
 	exclusive 1
 	macro_delay 1
+	run-once 1
 	call {
-		
-		if ($.map != prt_fild05) goto SaveToPrtFild05
-		if ($.map == prt_fild05) goto AlreadyInPrtFild05
-		
-		stop
-		
-		:SaveToPrtFild05
-			log === Set Config ===
-			[
-				do conf lockMap none
-				do conf route_randomWalk 0
-				do conf storageAuto 0
-				do conf sellAuto 0
-				do conf attackAuto -1
-				
-			]
-			
-			do move prt_fild05
-			do conf -f knightQuest MoveToKnightQuest
-			
-			if ($.map == morocc) {
-				log === Saving to Morocc === 
-				do move prt_fild05 &rand(296,299) &rand(225,219)
-				do talknpc 290 224 c r0 n
-				do conf saveMap prt_fild05
-			}
-			
-			lock Swordie50
-		
-		:AlreadyInPrtFild05
-			do conf -f knightQuest MoveToKnightQuest
-			do move prt_fild05 &rand(296,299) &rand(225,219)
-			do talknpc 290 224 c r0 n
-			do conf saveMap prt_fild05
-			lock Swordie50
+		do conf -f knightQuest MoveToKnightQuest
+		do conf route_randomWalk 0
+		do move prt_fild05 &rand(296,299) &rand(225,219)
+		do talknpc 290 224 c r0 n
+		do conf saveMap prt_fild05
+		lock Swordie50
 	}
 	timeout 60
 }
@@ -73,7 +47,6 @@ automacro MoveToKnightQuest {
 	exclusive 1
 	macro_delay 1
 	call {
-		#do conf route_randomWalk 0
 		do move prt_in 80 110
 		do conf knightQuest TalkToChivCaptain
 	}
@@ -160,11 +133,12 @@ automacro TalkToSirWindsor {
 		do talk resp 0 #Sir Siracuse sent me to you
 		#log Quest: Tenacity of a Knight (9006) added.
 	}
-	timeout 60
+	timeout 10
 }
 
 
 automacro EnterChatroomSirWindsor {
+	ConfigKey knightQuest TalkToSirWindsor
 	QuestActive 9006
 	NpcNear /Knight Windsor/
 	InMap job_knt
@@ -173,22 +147,93 @@ automacro EnterChatroomSirWindsor {
 	exclusive 1
 	macro_delay 1
 	call {
-		do conf route_randomWalk 1
-		do conf attackAuto 2
 		do chat list
 		do chat join 0
-		do conf knightQuest DoneWindsor
+		[
+			do conf knightQuest DoneWindsor
+			do conf itemsTakeAuto 0
+			do conf itemsGatherAuto 0
+		]
 	}
-	timeout 30
+	timeout 10
 }
 
+
+automacro InsideJobKntWindsorRoom1 {
+	ConfigKey knightQuest DoneWindsor
+	QuestActive 9006
+	InMap job_knt
+	IsInCoordinate 42..44 146..148
+	exclusive 1
+	call {
+		[
+			do conf route_randomWalk 1
+			#do conf attackAuto 2
+			do conf lockMap job_knt
+			do conf lockMap_x 43
+			do conf lockMap_y 148
+			do conf lockMap_randX 15
+			do conf lockMap_randY 15
+		]
+	}
+	timeout 10
+}
+
+automacro InsideJobKntWindsorRoom2 {
+	ConfigKey knightQuest DoneWindsor
+	QuestActive 9006
+	InMap job_knt
+	IsInCoordinate 42..44 51..53
+	exclusive 1
+	call {
+		[
+			do conf route_randomWalk 1
+			#do conf attackAuto 2
+			do conf lockMap job_knt
+			do conf lockMap_x 43
+			do conf lockMap_y 52
+			do conf lockMap_randX 15
+			do conf lockMap_randY 15
+		]
+	}
+	timeout 10
+}
+
+automacro InsideJobKntWindsorRoom3 {
+	ConfigKey knightQuest DoneWindsor
+	QuestActive 9006
+	InMap job_knt
+	IsInCoordinate 142..144 151..153
+	exclusive 1
+	call {
+		[
+			do conf route_randomWalk 1
+			do conf attackAuto 2
+			do conf lockMap job_knt
+			do conf lockMap_x 143
+			do conf lockMap_y 152
+			do conf lockMap_randX 15
+			do conf lockMap_randY 15
+		]
+	}
+	timeout 10
+}
 
 automacro DiedAtWindsorQuest {
 	QuestActive 9006
 	InMap job_knt
 	SimpleHookEvent self_died
 	call {
-		do conf knightQuest TalkToSirWindsor
+		[
+			do conf knightQuest TalkToSirWindsor
+			do conf route_randomWalk 0
+			do conf sitAuto_hp_upper 90
+			do conf lockMap none
+			do conf lockMap_x none
+			do conf lockMap_y none
+			do conf lockMap_randX none
+			do conf lockMap_randY none
+		]
 		do relog 5
 	}
 	timeout 30
@@ -233,15 +278,22 @@ automacro TalkToSirEdmond {
 	JobLevel = 50
 	macro_delay 1
 	call {
-		do conf attackAuto 0
-		do conf route_randomWalk 0
+		[
+			do conf attackAuto 0
+			do conf route_randomWalk 0
+			do conf lockMap none
+			do conf lockMap_x none
+			do conf lockMap_y none
+			do conf lockMap_randX none
+			do conf lockMap_randY none
+		]
+		
 		do talk &npc(70 99) #SirEdmond
 		do talk resp 0 #Lady Amy sent me.
 		do conf knightQuest TalkToSirGray
 	}
 	timeout 30
 }
-
 
 automacro TalkToSirGray {
 	ConfigKey knightQuest TalkToSirGray
@@ -264,7 +316,6 @@ automacro TalkToSirGray {
 	timeout 30
 }
 
-
 automacro TalkToChivCaptain2 {
 	ConfigKey knightQuest BecomingKnight
 	QuestActive 9012
@@ -280,22 +331,21 @@ automacro TalkToChivCaptain2 {
 		do conf knightQuest none
 		do conf attackAuto 2
 		do conf route_randomWalk 1
+		do conf saveMap none
 		do relog 3600
 	}
 	timeout 30
 }
 
-
-automacro antiDC {
+automacro ResumeQuest {
 	QuestActive 9003, 9004, 9006, 9010
-	NotInMap prt_in
+	InMap prt_fild05, prontera
+	CurrentHP > 90%
 	JobID 1
 	JobLevel = 50
 	exclusive 1
-	run-once 1
 	call {
-		#do move prt_in 80 110
 		do move prt_in &rand(73,77) &rand(100,94)
 	}
-	timeout 30
+	timeout 10
 }
