@@ -5,6 +5,7 @@ automacro LeavingTrainingGround {
 	run-once 1
 	macro_delay 1
 	call {
+		do conf sellAuto 0
 		do conf route_randomWalk 0
 		do conf attackAuto -1
 		do move new_1-4 &rand(96,103) &rand(21,25) #NearFinalTester
@@ -214,10 +215,13 @@ automacro SwordsmanFinishQuest {
 		do eq Novice Adventurer's Suit [1]
 		do eq Novice Falchion [3]
 		do conf route_randomWalk 1
-		do conf attackAuto 2
-		do conf sitAuto_hp_lower 20
-		do conf sitAuto_hp_upper 90
-		do conf QuestPart none
+		[
+			do conf attackAuto 2
+			do conf sitAuto_hp_lower 20
+			do conf sitAuto_hp_upper 90
+			do conf QuestPart none
+			do conf sellAuto 1
+		]
 	}
 	timeout 30
 }
