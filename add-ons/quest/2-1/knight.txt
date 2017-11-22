@@ -29,10 +29,12 @@ automacro Swordie50 {
 	macro_delay 1
 	run-once 1
 	call {
+		[
 		do conf -f knightQuest MoveToKnightQuest
 		do conf autoTalkCont 1
 		do conf lockMap none
 		do conf route_randomWalk 0
+		]
 		do move prt_fild05 &rand(296,299) &rand(225,219)
 		do talknpc 290 224 c r0 n
 		do conf saveMap prt_fild05
