@@ -22,7 +22,6 @@ automacro AddSkillPoints {
 automacro Swordie50 {
 	ConfigKey knightQuest none
 	QuestInactive 9000, 9003, 9004, 9006, 9010, 9011, 9012
-	NotInMap prt_fild05, prontera
 	JobID 1
 	JobLevel = 50
 	exclusive 1
