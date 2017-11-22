@@ -12,8 +12,8 @@ automacro AddSkillPoints {
 		]
 		[
 			do conf -f knightQuest none
+			do conf skillsAddAuto_list NV_BASIC 9, SM_SWORD 1, SM_TWOHAND 10, SM_RECOVERY 10, SM_BASH 10, SM_PROVOKE 5, SM_MAGNUM 8, SM_ENDURE 5
 			do conf skillsAddAuto 1
-			do conf skillsAddAuto_list NV_BASIC 9, SM_SWORD 1, SM_TWOHAND 10, SM_RECOVERY10, SM_BASH 10, SM_PROVOKE 5, SM_MAGNUM 8, SM_ENDURE 5
 		]
 	}
 }
